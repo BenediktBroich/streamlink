@@ -21,8 +21,7 @@
 
 ;;; Code:
 
-;; (require 'easymenu)
-;; (require 'thing-at-point)
+(require 'thingatpt)
 
 (defgroup streamlink nil
   "A major mode for interacting with the streamlink program."
