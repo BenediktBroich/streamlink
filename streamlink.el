@@ -1,6 +1,7 @@
 ;;; streamlink.el --- A major mode for streamlink output.
 
 ;; Copyright (C) 2021 Benedikt Broich
+;; Package-Requires: ((s "1.12.0"))
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -22,6 +23,7 @@
 ;;; Code:
 
 (require 'thingatpt)
+(require 's)
 
 (defgroup streamlink nil
   "A major mode for interacting with the streamlink program."
