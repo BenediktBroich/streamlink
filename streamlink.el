@@ -200,7 +200,7 @@
 (defun streamlink--filter (proc output)
   "Filter OUTPUT from Streamlink process PROC for display in the buffer."
   (let ((buff (process-buffer proc)))
-    (when (not (null buff))
+    (when buff
       (with-current-buffer buff
         (let ((inhibit-read-only t))
           (goto-char (point-max))
@@ -209,7 +209,7 @@
 (defun streamlink--sentinel (proc event)
   "Respond when Streamlink process PROC receives EVENT."
   (let ((buff (process-buffer proc)))
-    (when (not (null buff))
+    (when buff
       (with-current-buffer buff
         (let ((inhibit-read-only t))
           (goto-char (point-max))
