@@ -1,2 +1,2 @@
 # streamlink
-streamlink.el
+Functions to control streamlink from within emacs. 
