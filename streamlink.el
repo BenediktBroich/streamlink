@@ -67,6 +67,27 @@ Streamlink."
 (defvar-local streamlink-current-size nil
   "The current stream size for a `streamlink-mode' buffer.")
 
+(defvar streamlink-url-regexp
+  (concat
+   "\\b\\(\\(www\\.\\|\\(s?https?\\|ftp\\|file\\|gopher\\|"
+   "nntp\\|news\\|telnet\\|wais\\|mailto\\|info\\):\\)"
+   "\\(//[-a-z0-9_.]+:[0-9]*\\)?"
+   (if (string-match "[[:digit:]]" "1") ;; Support POSIX?
+       (let ((chars "-a-z0-9_=#$@~%&*+\\/[:word:]")
+	           (punct "!?:;.,"))
+	       (concat
+	        "\\(?:"
+	        ;; Match paired parentheses, e.g. in Wikipedia URLs:
+	        "[" chars punct "]+" "(" "[" chars punct "]+" "[" chars "]*)" "[" chars "]"
+	        "\\|"
+	        "[" chars punct     "]+" "[" chars "]"
+	        "\\)"))
+     (concat ;; XEmacs 21.4 doesn't support POSIX.
+      "\\([-a-z0-9_=!?#$@~%&*+\\/:;.,]\\|\\w\\)+"
+      "\\([-a-z0-9_=#$@~%&*+\\/]\\|\\w\\)"))
+   "\\)")
+  "Regexp matching URLs.")
+
 (defun streamlink-default-header ()
   "Provides the default header for `streamlink-mode'."
   (concat
@@ -233,13 +254,11 @@ the buffer."
 
 (defun streamlink-open-url ()
   "Opens the stream at URL using the Streamlink program."
-  (interactive
-   (let* (
-           (url (or (thing-at-point-url-at-point)
-                    (current-kill 0)
-                    ""))
-           )
-   (streamlink-open (read-string "URL: " url)))))
+  (interactive)
+  (if (string-match-p streamlink-url-regexp (current-kill 0))
+      (setq url (current-kill 0))
+    (setq url nil))
+  (streamlink-open (read-string "URL: " url)))
 
 (provide 'streamlink)
 
