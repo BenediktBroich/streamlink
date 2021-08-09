@@ -1,7 +1,10 @@
-;;; streamlink.el --- A major mode for streamlink output.
+;;; streamlink.el --- A major mode for streamlink output
 
 ;; Copyright (C) 2021 Benedikt Broich
+;; Version: 0.1
 ;; Package-Requires: ((s "1.12.0"))
+;; Keywords: multimedia, streamlink
+;; URL: https://github.com/BenediktBroich/streamlink
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -19,6 +22,11 @@
 ;; along with GNU Emacs; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 ;; Boston, MA 02110-1301, USA.
+
+
+;;; Commentary:
+;; This package is mainly used for opening links in streamlink with the
+;; streamlink-open-url function.
 
 ;;; Code:
 
@@ -40,8 +48,7 @@
   :group 'streamlink)
 
 (defcustom streamlink-player nil
-  "If non-nil, pass contents as the --player argument to
-Streamlink."
+  "If non-nil, pass contents as the --player argument to Streamlink."
   :type 'string
   :group 'streamlink)
 
@@ -60,13 +67,13 @@ Streamlink."
   :type 'list
   :group 'streamlink)
 
-(defvar-local streamlink-process nil
+(defvar streamlink-process nil
   "The Streamlink process for a `streamlink-mode' buffer.")
 
-(defvar-local streamlink-url nil
+(defvar streamlink-url nil
   "The current stream URL for a `streamlink-mode' buffer.")
 
-(defvar-local streamlink-current-size nil
+(defvar streamlink-current-size nil
   "The current stream size for a `streamlink-mode' buffer.")
 
 (defvar streamlink-url-regexp
@@ -99,8 +106,7 @@ Streamlink."
                'face 'font-lock-string-face)))
 
 (defun streamlink-kill-buffer ()
-  "Safely interrupt running stream players under Streamlink
-before killing the buffer."
+  "Safely interrupt running stream players under Streamlink before killing the buffer."
   (interactive)
   (when (eq major-mode 'streamlink-mode)
     (if (equal 'run (process-status streamlink-process))
@@ -108,8 +114,7 @@ before killing the buffer."
       (kill-buffer))))
 
 (defun streamlink-reopen-stream ()
-  "Re-open the previous stream for this buffer using
-Streamlink."
+  "Re-open the previous stream for this buffer using Streamlink."
   (interactive)
   (when (eq major-mode 'streamlink-mode)
     (let ((inhibit-read-only t))
@@ -123,8 +128,7 @@ Streamlink."
                            "# Re-opening stream...\n")))))
 
 (defun streamlink--get-stream-sizes ()
-  "Retrieve the available stream sizes from the buffer's process
-output content."
+  "Retrieve the available stream sizes from the buffer's process output content."
   (save-excursion
     (with-current-buffer "*streamlink*"
       (goto-char (point-min))
@@ -138,7 +142,7 @@ output content."
                                (buffer-substring start end))) ", ")))))
 
 (defun streamlink-resize-stream (size)
-  "Re-open the stream with a different size."
+  "Re-open the stream with a different SIZE."
   (interactive
    (list (intern (completing-read
                   "Size: "
@@ -169,8 +173,7 @@ output content."
   (hl-line-mode))
 
 (defun streamlink-menu--add-sizes (default-menu)
-  "Append a submenu to the DEFAULT-MENU listing the available
-stream sizes."
+  "Append a submenu to the DEFAULT-MENU listing the available stream sizes."
   (let ((sizes (streamlink--get-stream-sizes)))
     (cons
      (cons "Resize stream (s)"
@@ -195,8 +198,7 @@ stream sizes."
      :active (not (equal 'run (process-status streamlink-process)))]))
 
 (defun streamlink--filter (proc output)
-  "Filter OUTPUT from Streamlink process PROC for display in
-the buffer."
+  "Filter OUTPUT from Streamlink process PROC for display in the buffer."
   (let ((buff (process-buffer proc)))
     (when (not (null buff))
       (with-current-buffer buff
@@ -222,7 +224,11 @@ the buffer."
 
 ;;;###autoload
 (defun streamlink-open (url &optional size opts no-erase msg)
-  "Opens the stream at URL using the Streamlink program."
+  "Opens the stream at URL using the Streamlink program.
+Optional argument SIZE Size of the stream.
+Optional argument OPTS Options for streamlink.
+Optional argument NO-ERASE Erase old buffer.
+Optional argument MSG First message shown in buffer."
   (let* ((cmd  (executable-find streamlink-binary))
          (size (or size streamlink-size ""))
          (opts (or opts streamlink-opts ""))
