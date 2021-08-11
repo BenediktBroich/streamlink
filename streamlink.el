@@ -1,5 +1,6 @@
 ;;; streamlink.el --- A major mode for streamlink output
 
+;; Copyright (C) 2015 Aaron Jacobs
 ;; Copyright (C) 2021 Benedikt Broich
 ;; Version: 0.1
 ;; Package-Requires: ((s "1.12.0"))
