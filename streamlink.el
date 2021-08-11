@@ -263,12 +263,13 @@ Optional argument MSG First message shown in buffer."
 (defun streamlink-open-url ()
   "Opens the stream at URL using the Streamlink program."
   (interactive)
-  (if (thing-at-point-url-at-point)
-      (setq url (thing-at-point-url-at-point))
-    (if (string-match-p streamlink-url-regexp (current-kill 0))
-        (setq url (current-kill 0))
-    (setq url nil)))
-  (streamlink-open (read-string "URL: " url)))
+  (let (url)
+    (if (thing-at-point-url-at-point)
+        (setq url (thing-at-point-url-at-point))
+      (if (string-match-p streamlink-url-regexp (current-kill 0))
+          (setq url (current-kill 0))
+        (setq url nil)))
+    (streamlink-open (read-string "URL: " url))))
 
 (provide 'streamlink)
 
